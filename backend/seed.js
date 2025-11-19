@@ -2,15 +2,17 @@ import { connectDB } from './db.js';
 
 const db = await connectDB();
 
+// Ensure table has a status column (idempotent)
 await db.exec(`
-CREATE TABLE IF NOT EXISTS tickets (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  price INTEGER NOT NULL,
-  section TEXT NOT NULL,
-  count INTEGER NOT NULL,
-  date TEXT NOT NULL,
-  show_name TEXT NOT NULL
-);
+  CREATE TABLE IF NOT EXISTS tickets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    price INTEGER NOT NULL,
+    section TEXT NOT NULL,
+    count INTEGER NOT NULL,
+    date TEXT NOT NULL,
+    show_name TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'open'
+  );
 `);
 
 const { c } = await db.get(`SELECT COUNT(*) AS c FROM tickets`);

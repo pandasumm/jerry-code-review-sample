@@ -25,7 +25,7 @@ Open the app in the browser. You should see:
 - A list of tickets grouped by show and date
 
 ## What you’ll build
-- Add a “Buy” button per ticket that calls POST /api/tickets/:id/buy and refreshes the list
+- Identify and fix any bugs or performance issues
 - Add filters (by date/section), or sorting (by price)
 - Add pagination or basic search
 

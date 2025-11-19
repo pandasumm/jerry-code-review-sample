@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import './App.css'
 
 function App() {
@@ -13,12 +13,31 @@ function App() {
   const {
     data: tickets,
     isLoading: ticketsLoading,
-    error: ticketsError
+    error: ticketsError,
+    refetch: refetchTickets
   } = useQuery({
     queryKey: ['tickets'],
     queryFn: async () => {
       const response = await fetch('http://localhost:4000/api/tickets')
       return response.json()
+    }
+  })
+
+  const buyMutation = useMutation({
+    mutationFn: async (id) => {
+      const res = await fetch(`http://localhost:4000/api/tickets/${id}/buy`, {
+        method: 'POST'
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.error || 'Buy failed')
+      }
+      return res.json()
+    },
+    onSuccess: () => {
+      // BUG (performance): double refetch causes redundant network / cache churn
+      refetchTickets()
+      refetchTickets()
     }
   })
 
@@ -45,17 +64,28 @@ function App() {
         {!ticketsLoading && !ticketsError && tickets?.length === 0 && <p>No tickets</p>}
 
         {Object.values(grouped).map(group => (
-          <div key={group.show_name + group.date}>
+          <div key={group.show_name + group.date} className="ticket-group">
             <h4>{group.show_name} — {group.date}</h4>
-            <ul>
+            <ul className="ticket-list">
               {group.rows.map(t => (
                 <li key={t.id}>
                   Section: {t.section} | Price: ${t.price} | Count: {t.count}
+                  <button
+                    style={{ marginLeft: 8 }}
+                    disabled={t.count < 0 || buyMutation.isPending}
+                    onClick={() => buyMutation.mutate(t.id)}
+                  >
+                    {t.count > 0 ? (buyMutation.isPending ? 'Buying...' : 'Buy') : 'Sold Out?'}
+                  </button>
                 </li>
               ))}
             </ul>
           </div>
         ))}
+
+        {buyMutation.isError && (
+          <p style={{ color: 'red' }}>Buy error: {buyMutation.error.message}</p>
+        )}
       </div>
     </>
   )
