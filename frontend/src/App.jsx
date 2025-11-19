@@ -1,0 +1,64 @@
+import { useQuery } from '@tanstack/react-query'
+import './App.css'
+
+function App() {
+  const { data: backendStatus, error: backendError } = useQuery({
+    queryKey: ['hello'],
+    queryFn: async () => {
+      const response = await fetch('http://localhost:4000/api/hello')
+      return response.json()
+    }
+  })
+
+  const {
+    data: tickets,
+    isLoading: ticketsLoading,
+    error: ticketsError
+  } = useQuery({
+    queryKey: ['tickets'],
+    queryFn: async () => {
+      const response = await fetch('http://localhost:4000/api/tickets')
+      return response.json()
+    }
+  })
+
+  const grouped = (tickets || []).reduce((acc, t) => {
+    const key = `${t.show_name}__${t.date}`
+    acc[key] = acc[key] || { show_name: t.show_name, date: t.date, rows: [] }
+    acc[key].rows.push(t)
+    return acc
+  }, {})
+
+  return (
+    <>
+      <div className="status-bar">
+        <p className="status-bar__title">Hack Jerry</p>
+        <p className="status-bar__msg">
+          {backendStatus?.message || backendError?.message || '...'}
+        </p>
+      </div>
+
+      <div className="card">
+        <h3>Tickets</h3>
+        {ticketsLoading && <p>Loading...</p>}
+        {ticketsError && <p style={{ color: 'red' }}>Error loading tickets</p>}
+        {!ticketsLoading && !ticketsError && tickets?.length === 0 && <p>No tickets</p>}
+
+        {Object.values(grouped).map(group => (
+          <div key={group.show_name + group.date}>
+            <h4>{group.show_name} — {group.date}</h4>
+            <ul>
+              {group.rows.map(t => (
+                <li key={t.id}>
+                  Section: {t.section} | Price: ${t.price} | Count: {t.count}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </>
+  )
+}
+
+export default App
