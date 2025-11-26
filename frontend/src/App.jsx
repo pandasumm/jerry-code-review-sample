@@ -41,6 +41,10 @@ function App() {
     }
   })
 
+  const handleBuy = (id) => {
+    buyMutation.mutate(id)
+  }
+
   const grouped = (tickets || []).reduce((acc, t) => {
     const key = `${t.show_name}__${t.date}`
     acc[key] = acc[key] || { show_name: t.show_name, date: t.date, rows: [] }
@@ -73,7 +77,7 @@ function App() {
                   <button
                     style={{ marginLeft: 8 }}
                     disabled={t.count < 0}
-                    onClick={() => buyMutation.mutate(t.id)}
+                    onClick={() => handleBuy(t.id)}
                   >
                     {t.count > 0 ? 'Buy' : 'Sold Out?'}
                   </button>
