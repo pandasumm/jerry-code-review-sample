@@ -2,6 +2,9 @@ import { connectDB } from './db.js';
 
 const db = await connectDB();
 
+// drop tickets table if exists
+await db.exec(`DROP TABLE IF EXISTS tickets`);
+
 // Ensure table has a status column (idempotent)
 await db.exec(`
   CREATE TABLE IF NOT EXISTS tickets (

@@ -72,10 +72,10 @@ function App() {
                   Section: {t.section} | Price: ${t.price} | Count: {t.count}
                   <button
                     style={{ marginLeft: 8 }}
-                    disabled={t.count < 0 || buyMutation.isPending}
+                    disabled={t.count < 0}
                     onClick={() => buyMutation.mutate(t.id)}
                   >
-                    {t.count > 0 ? (buyMutation.isPending ? 'Buying...' : 'Buy') : 'Sold Out?'}
+                    {t.count > 0 ? 'Buy' : 'Sold Out?'}
                   </button>
                 </li>
               ))}
