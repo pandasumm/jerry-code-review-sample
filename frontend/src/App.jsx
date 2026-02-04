@@ -55,7 +55,7 @@ function App() {
   return (
     <>
       <div className="status-bar">
-        <p className="status-bar__title">Hack Jerry</p>
+        <p className="status-bar__title">Jerry</p>
         <p className="status-bar__msg">
           {backendStatus?.message || backendError?.message || '...'}
         </p>

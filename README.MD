@@ -21,7 +21,7 @@ npm run dev:frontend
 ```
 
 Open the app in the browser. You should see:
-- “Hack Jerry” and “Backend is working fine” fixed at the top‑left
+- “Jerry” and “Backend is working fine” fixed at the top‑left
 - A list of tickets grouped by show and date
 
 ## What you’ll build
@@ -33,7 +33,7 @@ Keep it simple, readable, and focused.
 
 ## Project Structure
 ```
-hack-jerry/
+jerry-code-review-sample/
 ├─ backend/              # Express server + SQLite (db.sqlite)
 │  ├─ server.js
 │  ├─ db.js

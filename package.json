@@ -1,5 +1,5 @@
 {
-  "name": "hack-jerry",
+  "name": "jerry",
   "private": true,
   "workspaces": [
     "backend",
